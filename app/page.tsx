@@ -30,6 +30,7 @@ const Home: FC = () => {
 
   useEffect(() => {
     const loadHashes = async () => {
+      if (loading) return;
       setLoading(true);
       const newHashes = await fetchHashes(start);
       setHashes((prev) => [...prev, ...newHashes]); // append new hashes
@@ -47,15 +48,15 @@ const Home: FC = () => {
         },
         { threshold: 1.0 },
       );
+
       observer.current.observe(loadMoreRef.current);
     }
 
     return () => observer.current?.disconnect();
-  }, [start]);
+  }, [start, loading]);
 
   return (
     <div className="container">
-      <h1>SHA-256 Hashes</h1>
       <HashList hashes={hashes} />
       <div ref={loadMoreRef} style={{ height: "20px" }}></div>
       {loading && <p>Loading more hashes...</p>}
